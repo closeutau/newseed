@@ -33,7 +33,7 @@ if(hostconfig.namuwiki_exclusive) router.get(/^\/self_unblock$/, async(req, res)
 
 router.all(/^\/aclgroup\/create$/, async(req, res, next) => {
 	if(!['POST', 'GET'].includes(req.method)) return next();
-	if(!hasperm(req, 'aclgroup')) return res.send(await showError(req, 'permission'));
+	if (!(hasperm(req, 'aclgroup') && hasperm(req, 'developer'))) return res.send(await showError(req, 'permission'));
 	
 	var content = `
 		<form method=post>
@@ -91,7 +91,7 @@ router.all(/^\/aclgroup\/create$/, async(req, res, next) => {
 });
 
 router.post(/^\/aclgroup\/delete$/, async(req, res, next) => {
-	if(!hasperm(req, 'aclgroup')) return res.send(await showError(req, 'permission'));
+	if (!hasperm(req, 'aclgroup') && !hasperm(req, 'developer')) return res.send(await showError(req, 'permission'));
 	const { group } = req.body;
 	if(!group) return res.redirect('/aclgroup');  // 귀찮음
 	await curs.execute("delete from aclgroup_groups where name = ?", [group]);
@@ -362,11 +362,12 @@ router.all(/^\/aclgroup$/, async(req, res) => {
 	var error = null;
 	
 	if(req.method == 'POST') do {
-		if(group != '차단된 사용자' && !hasperm(req, 'aclgroup'))
-			return res.status(403).send(await showError(req, 'permission'));
-		if(group == '차단된 사용자' && !hasperm(req, 'admin'))
-			return res.status(403).send(await showError(req, 'permission'));
-
+		if (group !== '차단된 사용자' && !hasperm(req, 'aclgroup') && !hasperm(req, 'developer')) {
+			return res.send(await showError(req, 'permission'));
+		}
+		if (group === '차단된 사용자' && !hasperm(req, 'admin') && !hasperm(req, 'developer')) {
+			return res.send(await showError(req, 'permission'));
+		}
 		var { mode, username, expire, note } = req.body;
 		if(!['ip', 'username'].includes(mode) || !username || !expire || note == undefined) 
 			{ content = (error = err('alert', { code: 'invalid_value' })) + content; break; }

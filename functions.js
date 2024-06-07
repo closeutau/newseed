@@ -247,6 +247,8 @@ function islogin(req) {
 	return false;
 }
 
+// TODO: IPv6 지원
+const ip_regex = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
 // 아이디 확인
 function ip_check(req, forceIP) {
 	if(!forceIP && req.session.username)
@@ -254,7 +256,8 @@ function ip_check(req, forceIP) {
 	else if(hostconfig.custom_ip_header && req.headers[hostconfig.custom_ip_header.toLowerCase()])
 		return req.headers[hostconfig.custom_ip_header.toLowerCase()]
 	else
-		return (req.headers['x-forwarded-for'] || (req.socket ? req.socket.remoteAddress : req.connection.remoteAddress) || req.ip || '10.0.0.9').split(',')[0];
+		const ip = (req.headers['x-forwarded-for'] || (req.socket ? req.socket.remoteAddress : req.connection.remoteAddress) || req.ip || '10.0.0.9').split(',')[0]
+		return ip_regex.test(ip) ? ip : '10.0.0.9';
 }
 
 // 사용자설정 가져오기

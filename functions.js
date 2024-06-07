@@ -255,9 +255,10 @@ function ip_check(req, forceIP) {
 		return req.session.username;
 	else if(hostconfig.custom_ip_header && req.headers[hostconfig.custom_ip_header.toLowerCase()])
 		return req.headers[hostconfig.custom_ip_header.toLowerCase()]
-	else
+	else {
 		const ip = (req.headers['x-forwarded-for'] || (req.socket ? req.socket.remoteAddress : req.connection.remoteAddress) || req.ip || '10.0.0.9').split(',')[0]
 		return ip_regex.test(ip) ? ip : '10.0.0.9';
+	}
 }
 
 // 사용자설정 가져오기

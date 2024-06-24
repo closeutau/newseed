@@ -1,14 +1,14 @@
 router.get('/member/withdraw', async (req, res) => {
     var content = `
-        계정 삭제가 비활성화돼 있습니다.
+        이 기능이 활성화되있지 않습니다.
     `;
 
     res.send(await render(req, '오류', content, {}, _, null, 'withdraw'));
 });
 
-/*if(hostconfig.allow_account_deletion) router.all(/^\/member\/delete_account$/, async(req, res, next) => {
+/*if(hostconfig.allow_account_deletion) router.all(/^\/member\/withdraw$/, async(req, res, next) => {
 	if(!['GET', 'POST'].includes(req.method)) return next();
-	if(!islogin(req)) return res.redirect('/member/login?redirect=%2Fmember%2Fdelete_account');
+	if(!islogin(req)) return res.redirect('/member/login?redirect=%2Fmember%2Fwithdraw');
 	const username = ip_check(req);
 	var error = false;
 	

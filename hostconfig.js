@@ -15,4 +15,12 @@ if(hostconfig.disable_file_server === undefined)
 if(hostconfig.database_type === undefined)
 	hostconfig.database_type = (process.env.DATABASE_TYPE || '').toLowerCase() || 'sqlite';
 
+// IP 스푸핑 방지(CloudFlare 연계) 18~24 Line, newseed.xyz(op@newseed.xyz) all right reserved.
+
+if(hostconfig.use_cloudflare === undefined)
+	hostconfig.use_cloudflare = false;
+
+if(hostconfig.use_cloudflare === true && hostconfig.custom_ip_header === undefined)
+	hostconfig.custom_ip_header = "CF_Connecting_IP";
+
 module.exports = hostconfig;

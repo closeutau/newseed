@@ -64,6 +64,8 @@ Pull Request 시 서버 코드에는 `?.`, `??`, `import` 등의 신문법, 프�
   - `protect_owner`: (기본값 false) 소유자 보호 기능을 활성화한다.
   - `disable_multithreading`: (기본값 true) 멀티쓰레딩을 비활성화한다.
   - `custom_namespaces`: (기본값 []) 사용자 지정 이름공간 배열
+  - `custom_ip_header`: (기본값 x-forwarded-for) IP를 가져올 헤더를 자유롭게 지정
+  - `use_cloudflare`: (기본값 false) cloudflare를 사용하는 경우 IP를 CF_Connecting_IP에서 가져옴
   - `sessionhttp`: (기본값 false) true로 설정시, https접속시에만 로그인이 유지된다.
   - `mailhost`: (기본값 []) 이메일 호스트 설정.
   - `email`: (기본값 []) 이메일 주소.

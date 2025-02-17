@@ -198,9 +198,6 @@ wiki.use(cookieParser());
 
 wiki.use('/images', express.static('images', { maxAge: 86400000 }));
 
-// 업데이트 수준
-const updatecode = '25';
-
 // 보안을 위해...
 wiki.disable('x-powered-by');
 

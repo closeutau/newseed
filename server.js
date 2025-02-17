@@ -19,18 +19,15 @@ const child_process = require('child_process');
 const captchapng = require('captchapng');
 const fileUpload = require('express-fileupload');
 
-function print(x) { console.log(x); }
-function prt(x) { process.stdout.write(x); }
-
 // 삐
 function beep(cnt = 1) { // 경고음 재생
 	for(var i=1; i<=cnt; i++)
-		prt('');
+		process.stdout.write('');
 }
 
 // 입력받기
 function input(prpt) {
-	prt(prpt); // 일부러 이렇게. 바로하면 한글 깨짐.
+	process.stdout.write(prpt); // 일부러 이렇게. 바로하면 한글 깨짐.
 	return inputReader.readLine('');
 }
 
@@ -38,7 +35,7 @@ async function init() {
 	const database = require('./database');
 	for(var item in database) global[item] = database[item];
 	
-	print('병아리 - the seed 모방 엔진에 오신것을 환영합니다.\n');
+	console.log('병아리 - the seed 모방 엔진에 오신것을 환영합니다.\n');
 	
 	// 호스팅 설정
 	var hostconfig = {
@@ -91,7 +88,7 @@ async function init() {
 	};
 	
 	// 테이블 만들기
-	prt('\n데이타베이스 테이블을 만드는 중... ');
+	process.stdout.write('\n데이타베이스 테이블을 만드는 중... ');
 	for(var table in tables) {
 		var sql = '';
 		sql = `CREATE TABLE ${table} ( `;
@@ -102,9 +99,9 @@ async function init() {
 		sql += `)`;
 		await curs.execute(sql);
 	}
-	print('완료!');
+	console.log('완료!');
 	
-	prt('이름공간 ACL을 만드는 중... ');
+	process.stdout.write('이름공간 ACL을 만드는 중... ');
 	for(var namespc of ['문서', '틀', '분류', '파일', '더 시드']) {
 		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '1', 'read', 'allow', '0', 'perm', 'any', '1')");
 		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '1', 'edit', 'deny', '0', 'perm', 'blocked_ipacl', '1')");
@@ -158,14 +155,14 @@ async function init() {
 	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '휴지통', '1', 'edit_request', 'allow', '0', 'perm', 'admin', '1')");
 	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '휴지통', '1', 'acl', 'allow', '0', 'perm', 'admin', '1')");
 
-	print('완료!');
+	console.log('완료!');
 	
-	prt('ACL그룹을 만드는 중... ');
+	process.stdout.write('ACL그룹을 만드는 중... ');
 	await curs.execute("insert into aclgroup_groups (name, css, warning_description, disallow_signup) values ('차단된 사용자', 'text-decoration: line-through !important; color: gray !important;', '', '1')");
-	print('완료!');
+	console.log('완료!');
 	
 	fs.writeFileSync('config.json', JSON.stringify(hostconfig), 'utf8');
-	print('\n준비 완료되었습니다. 엔진을 다시 시작하십시오.');
+	console.log('\n준비 완료되었습니다. 엔진을 다시 시작하십시오.');
 	process.exit(0);
 }
 
@@ -558,7 +555,7 @@ wiki.use(function(req, res, next) {
 	await curs.execute("update config set value = ? where key = 'update_code'", [updatecode]);
 	wikiconfig.update_code = updatecode;
 	
-	if(hostconfig.debug) print('경고! 위키가 디버그 모드에서 실행 중입니다. 알려지지 않은 취약점에 노출될 수 있습니다.\n');
+	if(hostconfig.debug) console.log('경고! 위키가 디버그 모드에서 실행 중입니다. 알려지지 않은 취약점에 노출될 수 있습니다.\n');
 	
 	// 작성이 필요한 문서
 	async function cacheNeededPages() {
@@ -600,7 +597,7 @@ wiki.use(function(req, res, next) {
 		wiki.listen(process.env.PORT);  
 	else 
 		wiki.listen(port, host);
-	print(host + (port == 80 ? '' : (':' + port)) + '에서 실행 중. . .');
+	console.log(host + (port == 80 ? '' : (':' + port)) + '에서 실행 중. . .');
 	beep();
 	
 	if(hostconfig.search_autostart) {

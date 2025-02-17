@@ -4,7 +4,6 @@ router.all(/^\/acl\/(.*)$/, async(req, res, next) => {
 	const title = req.params[0];
 	const doc = processTitle(title);
 	if(['특수기능', '투표', '토론'].includes(doc.namespace) || !doc.title) return res.status(400).send(await showError(req, '문서 이름이 올바르지 않습니다.', 1));
-	if(ver('4.2.0')) {
 		await curs.execute("delete from acl where not expiration = '0' and cast(expiration as integer) < ?", [getTime()]);
 		const aclmsg = await getacl(req, doc.title, doc.namespace, 'acl');
 		const editable = !!aclmsg;
@@ -157,6 +156,7 @@ router.all(/^\/acl\/(.*)$/, async(req, res, next) => {
 		} else {
 			const scrollable = ver('4.13.0');
 			var content = ``;
+			// TODO: UI 최신화
 			for(var isns of [false, true]) {
 				content += `
 					<h2 class="wiki-heading">${isns ? '이름공간' : '문서'} ACL</h2>
@@ -256,111 +256,4 @@ router.all(/^\/acl\/(.*)$/, async(req, res, next) => {
 				document: doc,
 			}, '', false, 'acl'));
 		}
-	} else {
-		if(!hasperm(req, 'acl')) return res.send(await showError(req, 'permission'));
-		var dbdata = (await curs.execute("select read, edit, del, discuss, move from classic_acl where title = ? and namespace = ?", [doc.title, doc.namespace]))[0];
-		if(!dbdata) dbdata = {
-			read: 'everyone', 
-			edit: 'everyone', 
-			del: 'everyone', 
-			discuss: 'everyone', 
-			move: 'everyone' };
-		var error = null;
-		
-		// 내가 나무위키 자체는 ACL 개편 전에도 했지만, ACL 인터페이스는 개편 후 처음 접했음. 원본 HTML 코드는 모르고 캡춰 화면 보고 내 나름대로 씀.
-		var content = `
-			<form method=post>
-				<div class=form-group>
-					<label>읽기 : </label>
-					<select name=read class=form-control>
-						<option value=everyone${dbdata.read == 'everyone' ? ' selected' : ''}>모두</option>
-						<option value=member${dbdata.read == 'member' ? ' selected' : ''}>로그인한 사용자</option>
-						<option value=admin${dbdata.read == 'admin' ? ' selected' : ''}>관리자</option>
-					</select>
-				</div>
-				
-				<div class=form-group>
-					<label>편집 : </label>
-					<select name=edit class=form-control>
-						<option value=everyone${dbdata.edit == 'everyone' ? ' selected' : ''}>모두</option>
-						<option value=member${dbdata.edit == 'member' ? ' selected' : ''}>로그인한 사용자</option>
-						<option value=admin${dbdata.edit == 'admin' ? ' selected' : ''}>관리자</option>
-					</select>
-				</div>
-				
-				<div class=form-group>
-					<label>삭제 : </label>
-					<select name=delete class=form-control>
-						<option value=everyone${dbdata.del == 'everyone' ? ' selected' : ''}>모두</option>
-						<option value=member${dbdata.del == 'member' ? ' selected' : ''}>로그인한 사용자</option>
-						<option value=admin${dbdata.del == 'admin' ? ' selected' : ''}>관리자</option>
-					</select>
-				</div>
-				
-				<div class=form-group>
-					<label>토론 : </label>
-					<select name=discuss class=form-control>
-						<option value=everyone${dbdata.discuss == 'everyone' ? ' selected' : ''}>모두</option>
-						<option value=member${dbdata.discuss == 'member' ? ' selected' : ''}>로그인한 사용자</option>
-						<option value=admin${dbdata.discuss == 'admin' ? ' selected' : ''}>관리자</option>
-					</select>
-				</div>
-				
-				<div class=form-group>
-					<label>이동 : </label>
-					<select name=move class=form-control>
-						<option value=everyone${dbdata.move == 'everyone' ? ' selected' : ''}>모두</option>
-						<option value=member${dbdata.move == 'member' ? ' selected' : ''}>로그인한 사용자</option>
-						<option value=admin${dbdata.move == 'admin' ? ' selected' : ''}>관리자</option>
-					</select>
-				</div>
-				
-				<div class=form-group>
-					<label>요약 : </label>
-					<input name=log type=text id=logInput style="width: 100%;" />
-				</div>
-				
-				<div>
-					<button type=submit>삽입</button>
-				</div>
-			</form>
-		`;
-		
-		if(req.method == 'POST') {
-			if(!['everyone', 'member', 'admin'].includes(req.body['read']))
-				return res.send(await render(req, doc + ' (ACL)', (error = err('alert', { code: 'invalid_acl' })) + content, {}, '', error, 'acl'));
-			if(!['everyone', 'member', 'admin'].includes(req.body['edit']))
-				return res.send(await render(req, doc + ' (ACL)', (error = err('alert', { code: 'invalid_acl' })) + content, {}, '', error, 'acl'));
-			if(!['everyone', 'member', 'admin'].includes(req.body['delete']))
-				return res.send(await render(req, doc + ' (ACL)', (error = err('alert', { code: 'invalid_acl' })) + content, {}, '', error, 'acl'));
-			if(!['everyone', 'member', 'admin'].includes(req.body['discuss']))
-				return res.send(await render(req, doc + ' (ACL)', (error = err('alert', { code: 'invalid_acl' })) + content, {}, '', error, 'acl'));
-			if(!['everyone', 'member', 'admin'].includes(req.body['move']))
-				return res.send(await render(req, doc + ' (ACL)', (error = err('alert', { code: 'invalid_acl' })) + content, {}, '', error, 'acl'));
-			await curs.execute("delete from classic_acl where title = ? and namespace = ?", [doc.title, doc.namespace]);
-			await curs.execute("insert into classic_acl (title, namespace, read, edit, del, discuss, move, blockkorea, blockbot) values (?, ?, ?, ?, ?, ?, ?, '0', '0')", [doc.title, doc.namespace, req.body['read'], req.body['edit'], req.body['delete'], req.body['discuss'], req.body['move']]);
-			
-			var rawContent = await curs.execute("select content from documents where title = ? and namespace = ?", [doc.title, doc.namespace]);
-			if(!rawContent[0]) rawContent = '';
-			else rawContent = rawContent[0].content;
-			
-			var baserev;
-			var data = await curs.execute("select rev from history where title = ? and namespace = ? order by CAST(rev AS INTEGER) desc limit 1", [doc.title, doc.namespace]);
-			try {
-				baserev = data[0].rev;
-			} catch(e) {
-				baserev = 0;
-			}
-			curs.execute("insert into history (title, namespace, content, rev, username, time, changes, log, iserq, erqnum, ismember, advance, flags) \
-				values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [
-				doc.title, doc.namespace, rawContent, String(Number(baserev) + 1), ip_check(req), getTime(), '0', req.body['log'] || '', '0', '-1', islogin(req) ? 'author' : 'ip', 'acl', `${req.body['read']},${req.body['edit']},${req.body['delete']},${req.body['discuss']},${req.body['move']}`
-			]);
-			
-			return res.redirect('/acl/' + encodeURIComponent(doc + ''));
-		}
-		
-		return res.send(await render(req, doc + ' (ACL)', content, {
-			document: doc,
-		}, '', error, 'acl'));
-	}
 });

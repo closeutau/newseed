@@ -70,15 +70,12 @@ async function init() {
 		'login_history': ['username', 'ip', 'time'],
 		'account_creation': ['key', 'email', 'time'],
 		'acl': ['title', 'namespace', 'id', 'type', 'action', 'expiration', 'conditiontype', 'condition', 'ns'],
-		'ipacl': ['cidr', 'al', 'expiration', 'note', 'date'],
-		'suspend_account': ['username', 'date', 'expiration', 'note'],
 		'aclgroup_groups': ['name', 'admin', 'date', 'lastupdate', 'css', 'warning_description', 'disallow_signup'],
 		'aclgroup': ['aclgroup', 'type', 'username', 'note', 'date', 'expiration', 'id'],
 		'block_history': ['date', 'type', 'aclgroup', 'id', 'duration', 'note', 'executer', 'target', 'ismember', 'logid'],
 		'edit_requests': ['title', 'namespace', 'id', 'deleted', 'state', 'content', 'baserev', 'username', 'ismember', 'log', 'date', 'processor', 'processortype', 'lastupdate', 'processtime', 'reason', 'rev'],
 		'files': ['title', 'namespace', 'hash', 'url', 'size', 'width', 'height'],
 		'backlink': ['title', 'namespace', 'link', 'linkns', 'type', 'exist'],
-		'classic_acl': ['title', 'namespace', 'blockkorea', 'blockbot', 'read', 'edit', 'del', 'discuss', 'move'],
 		'autologin_tokens': ['username', 'token'],
 		'trusted_devices': ['username', 'id'],
 		'api_tokens': ['username', 'token'],
@@ -104,45 +101,45 @@ async function init() {
 	process.stdout.write('이름공간 ACL을 만드는 중... ');
 	for(var namespc of ['문서', '틀', '분류', '파일', '더 시드']) {
 		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '1', 'read', 'allow', '0', 'perm', 'any', '1')");
-		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '1', 'edit', 'deny', '0', 'perm', 'blocked_ipacl', '1')");
-		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '2', 'edit', 'deny', '0', 'perm', 'suspend_account', '1')");
+		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '1', 'edit', 'deny', '0', 'aclgroup', '차단된 사용자', '1')");
+		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '2', 'edit', 'deny', '0', 'aclgroup', '로그인 허용 차단', '1')");
 		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '3', 'edit', 'allow', '0', 'perm', 'any', '1')");
-		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '1', 'move', 'deny', '0', 'perm', 'blocked_ipacl', '1')");
-		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '2', 'move', 'deny', '0', 'perm', 'suspend_account', '1')");
+		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '1', 'move', 'deny', '0', 'aclgroup', '차단된 사용자', '1')");
+		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '2', 'move', 'deny', '0', 'aclgroup', '로그인 허용 차단', '1')");
 		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '3', 'move', 'allow', '0', 'perm', 'any', '1')");
-		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '1', 'delete', 'deny', '0', 'perm', 'blocked_ipacl', '1')");
-		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '2', 'delete', 'deny', '0', 'perm', 'suspend_account', '1')");
+		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '1', 'delete', 'deny', '0', 'aclgroup', '차단된 사용자', '1')");
+		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '2', 'delete', 'deny', '0', 'aclgroup', '로그인 허용 차단', '1')");
 		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '3', 'delete', 'allow', '0', 'perm', 'any', '1')");
-		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '1', 'create_thread', 'deny', '0', 'perm', 'blocked_ipacl', '1')");
-		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '2', 'create_thread', 'deny', '0', 'perm', 'suspend_account', '1')");
+		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '1', 'create_thread', 'deny', '0', 'aclgroup', '차단된 사용자', '1')");
+		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '2', 'create_thread', 'deny', '0', 'aclgroup', '로그인 허용 차단', '1')");
 		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '3', 'create_thread', 'allow', '0', 'perm', 'any', '1')");
-		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '1', 'write_thread_comment', 'deny', '0', 'perm', 'blocked_ipacl', '1')");
-		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '2', 'write_thread_comment', 'deny', '0', 'perm', 'suspend_account', '1')");
+		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '1', 'write_thread_comment', 'deny', '0', 'aclgroup', '차단된 사용자', '1')");
+		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '2', 'write_thread_comment', 'deny', '0', 'aclgroup', '로그인 허용 차단', '1')");
 		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '3', 'write_thread_comment', 'allow', '0', 'perm', 'any', '1')");
-		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '1', 'edit_request', 'deny', '0', 'perm', 'blocked_ipacl', '1')");
-		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '2', 'edit_request', 'deny', '0', 'perm', 'suspend_account', '1')");
+		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '1', 'edit_request', 'deny', '0', 'aclgroup', '차단된 사용자', '1')");
+		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '2', 'edit_request', 'deny', '0', 'aclgroup', '로그인 허용 차단', '1')");
 		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '3', 'edit_request', 'allow', '0', 'perm', 'any', '1')");
 		await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '" + namespc + "', '1', 'acl', 'allow', '0', 'perm', 'admin', '1')");
 	}
 	
 	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '1', 'read', 'allow', '0', 'perm', 'any', '1')");
-	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '1', 'edit', 'deny', '0', 'perm', 'suspend_account', '1')");
+	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '1', 'edit', 'deny', '0', 'aclgroup', '로그인 허용 차단', '1')");
 	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '2', 'edit', 'allow', '0', 'perm', 'match_username_and_document_title', '1')");
 	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '3', 'edit', 'allow', '0', 'perm', 'editable_other_user_document', '1')");
-	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '1', 'move', 'deny', '0', 'perm', 'suspend_account', '1')");
+	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '1', 'move', 'deny', '0', 'aclgroup', '로그인 허용 차단', '1')");
 	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '2', 'move', 'allow', '0', 'perm', 'match_username_and_document_title', '1')");
 	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '3', 'move', 'allow', '0', 'perm', 'editable_other_user_document', '1')");
-	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '1', 'delete', 'deny', '0', 'perm', 'suspend_account', '1')");
+	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '1', 'delete', 'deny', '0', 'aclgroup', '로그인 허용 차단', '1')");
 	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '2', 'delete', 'allow', '0', 'perm', 'match_username_and_document_title', '1')");
 	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '3', 'delete', 'allow', '0', 'perm', 'editable_other_user_document', '1')");
-	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '1', 'create_thread', 'deny', '0', 'perm', 'blocked_ipacl', '1')");
-	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '2', 'create_thread', 'deny', '0', 'perm', 'suspend_account', '1')");
+	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '1', 'create_thread', 'deny', '0', 'aclgroup', '차단된 사용자', '1')");
+	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '2', 'create_thread', 'deny', '0', 'aclgroup', '로그인 허용 차단', '1')");
 	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '3', 'create_thread', 'allow', '0', 'perm', 'any', '1')");
-	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '1', 'write_thread_comment', 'deny', '0', 'perm', 'blocked_ipacl', '1')");
-	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '2', 'write_thread_comment', 'deny', '0', 'perm', 'suspend_account', '1')");
+	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '1', 'write_thread_comment', 'deny', '0', 'aclgroup', '차단된 사용자', '1')");
+	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '2', 'write_thread_comment', 'deny', '0', 'aclgroup', '로그인 허용 차단', '1')");
 	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '3', 'write_thread_comment', 'allow', '0', 'perm', 'any', '1')");
-	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '1', 'edit_request', 'deny', '0', 'perm', 'blocked_ipacl', '1')");
-	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '2', 'edit_request', 'deny', '0', 'perm', 'suspend_account', '1')");
+	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '1', 'edit_request', 'deny', '0', 'aclgroup', '차단된 사용자', '1')");
+	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '2', 'edit_request', 'deny', '0', 'aclgroup', '로그인 허용 차단', '1')");
 	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '3', 'edit_request', 'allow', '0', 'perm', 'any', '1')");
 	await curs.execute("INSERT INTO acl (title, namespace, id, type, action, expiration, conditiontype, condition, ns) VALUES ('', '사용자', '1', 'acl', 'allow', '0', 'perm', 'admin', '1')");
 
@@ -159,6 +156,7 @@ async function init() {
 	
 	process.stdout.write('ACL그룹을 만드는 중... ');
 	await curs.execute("insert into aclgroup_groups (name, css, warning_description, disallow_signup) values ('차단된 사용자', 'text-decoration: line-through !important; color: gray !important;', '', '1')");
+	await curs.execute("insert into aclgroup_groups (name, css, warning_description, disallow_signup) values ('차단된 사용자', 'text-decoration: line-through !important; color: green !important;', '', '1')");
 	console.log('완료!');
 	
 	fs.writeFileSync('config.json', JSON.stringify(hostconfig), 'utf8');
@@ -190,15 +188,15 @@ wiki.use(session({
 	cookie: {
 		expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
 		httpOnly: true,
-		// secure: hostconfig.sessionhttps, (이렇게 하면 HTTP에서 로그인 자체가 불가능)
+		secure: hostconfig.sessionhttps,
 		samesite: "lax"
 	},
 	resave: false,
 	saveUninitialized: false,
 }));
 wiki.use(cookieParser());
-if(hostconfig.disable_file_server)
-	wiki.use('/images', express.static('images', { maxAge: 86400000 }));
+
+wiki.use('/images', express.static('images', { maxAge: 86400000 }));
 
 // 업데이트 수준
 const updatecode = '25';
@@ -232,33 +230,6 @@ wiki.all('*', async function(req, res, next) {
 	next();
 });
 
-// 자동 로그인 & 차단 로그아웃
-wiki.all('*', async function(req, res, next) {
-	if(!ver('4.1.0')) {
-		if(islogin(req) && await userblocked(ip_check(req))) {
-			delete req.session.username;
-			return next();
-		}
-	}
-	
-	if(req.session.username) {
-		const d = await curs.execute("select username from users where username = ?", [req.session.username]);
-		if(!d.length) delete req.session.username;
-		return next();
-	}
-	var autologin = req.cookies['honoka'];
-	if(autologin) {
-		const d = await curs.execute("select username, token from autologin_tokens where token = ?", [sha3(autologin)]);
-		if(!d.length) {
-			delete req.session.username;
-			res.cookie('honoka', '', { expires: new Date(Date.now() - 1) });
-		} else {
-			req.session.username = d[0].username;
-		}
-	}
-	next();
-});
-
 wiki.get(/^\/skins\/((?:(?!\/).)+)\/(.+)/, async function sendSkinFile(req, res, next) {
 	const skinname = req.params[0];
 	const filepath = req.params[1];
@@ -269,10 +240,6 @@ wiki.get(/^\/skins\/((?:(?!\/).)+)\/(.+)/, async function sendSkinFile(req, res,
 	if(decodeURIComponent(filepath).includes('./') || decodeURIComponent(filepath).includes('..')) {
 		return next();
 	}
-	
-	var skinconfig = skincfgs[skinname];
-	/* if(!skinconfig.static_files.includes(filepath))
-		return next(); */
 	
 	try {
 		res.sendFile(filepath, { root: './skins/' + skinname + '/static' });
@@ -298,52 +265,71 @@ wiki.use('/', router);
 // 404 페이지
 wiki.use(function(req, res, next) {
     return res.status(404).send(`
-		<!DOCTYPE html>
-		<html>
-			<head>
-				<meta charset=utf-8 />
-				<meta name=viewport content="width=1240">
-				<title>Page is not found!</title>
-				<style>
-					section {
-						position: fixed;
-						top: 0;
-						right: 0;
-						bottom: 0;
-						left: 0;
-						padding: 80px 0 0;
-						background-color:#EFEFEF;
-						font-family: "Open Sans", sans-serif;
-						text-align: center;
-					}
-					
-					h1 {
-						margin: 0 0 19px;
-						font-size: 40px;
-						font-weight: normal;
-						color: #E02B2B;
-						line-height: 40px;
-					}
-					
-					p {
-						margin: 0 0 57px;
-						font-size: 16px;
-						color:#444;
-						line-height: 23px;
-					}
-				</style>
-			</head>
-			
-			<body>
-				<section>
-					<h1>404</h1>
-					<p>
-						Page is not found!<br />
-						<a href="/">Back to home</a>
-					</p>
-				</section>
-			</body>
-		</html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>페이지를 찾을 수 없습니다.</title>
+        <link rel="stylesheet" href="/skins/haneul-liberty/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/skins/haneul-liberty/css/font-awesome.min.css">
+        <style>
+            section {
+                position: fixed;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                padding: 80px 0 0;
+                background-color:#EFEFEF;
+                font-family: "Open Sans", sans-serif;
+                text-align: center;
+            }    
+            p {
+                margin: 0 0 57px;
+                font-size: 16px;
+                color:#444;
+                line-height: 23px;
+            }
+            h1 {
+                margin: .67em 0;
+                font-size: 2em;
+            }
+        </style>
+    </head>
+    <body style="background-color: #fff;">
+        <section style="background-color: #fff;">
+            <p style="margin: 0;">
+                (로고 파일)
+            </p>
+                        <h1>
+                <b style="color:#87cefa;">
+                    404 NOT FOUND
+                </b>
+            </h1>
+            <p style="font-size: 14px;padding: 1px;">
+                <b style="font-size: 17px;padding-bottom: 30px;">
+                    페이지를 찾을 수 없습니다
+                </b><br>
+                <span style="margin-top: 10px;">
+                    /example 페이지는 없는 페이지입니다.<br>입력하신 URL을 다시 한 번 확인해주시거나,<br>오류일 수 있으니 새로고침해주세요.
+                </span>
+            </p>
+            <p>
+                (마스코드 파일)
+            </p><br><br><br>
+            <button class="btn btn-danger" onclick="history.back()" style="padding: .375rem 1rem;color:#fff;border-color: grey;background-color: grey;font-size: 13px;border: 1px solid transparent;border-radius: .25rem;">
+                <b style="font-size: 17px;">
+                    <span class="fa fa-refresh"></span> 돌아가기
+                </b>
+            </button>
+            <button class="btn btn-primary" onclick="location.href='/w/'" style="padding: .375rem 1rem;color:#fff;border-color: #87cefa;background-color: #87cefa;font-size: 17px;border: 1px solid transparent;border-radius: .25rem;">
+                <b>
+                    <span class="fa fa-home"></span> 대문가기
+                </b>
+            </button>
+        </section>
+    </body>
+</html>
 	`);
 });
 
@@ -372,191 +358,6 @@ wiki.use(function(req, res, next) {
 		userset[set.username][set.key] = set.value;
 	}
 	
-	// 엔진 업그레이드
-	switch(Number(config.getString('update_code', '1'))) {
-		case 1: {
-			// 역링크, 4.2.0 미만용 ACL
-			try {
-				await curs.execute("create table backlink (title text default '', namespace text default '', link text default '', linkns text default '', type text default 'link')");
-				await curs.execute("create table classic_acl (title text default '', namespace text default '', blockkorea text default '', blockbot text default '', read text default '', edit text default '', del text default '', discuss text default '', move text default '')");
-			} catch(e) {}
-		} case 2: {
-			// 역링크 테이블에 문서 존재 여부 열 추가
-			try {
-				await curs.execute("alter table backlink\nADD exist text;");
-			} catch(e) {}
-		} case 3: {
-			// 문서 테이블에 최종수정일 열 추가
-			try {
-				await curs.execute("alter table documents\nADD time text;");
-				(async function() {
-					for(let item of (await curs.execute("select title, namespace from documents"))) {
-						const d = await curs.execute("select time from history where title = ? and namespace = ? order by cast(rev as integer) desc limit 1", [item.title, item.namespace]);
-						if(!d.length) continue;
-						await curs.execute("update documents set time = ? where title = ? and namespace = ?", [d[0].time, item.title, item.namespace]);
-					}
-				})();
-			} catch(e) {}
-		} case 4: {
-			// 탈퇴한 사용자
-			try {
-				await curs.execute("update res set username = '탈퇴한 사용자' where username = '' and ismember = 'author'");
-				await curs.execute("update history set username = '탈퇴한 사용자' where username = '' and ismember = 'author'");
-			} catch(e) {}
-		} case 5: {
-			// 자동 로그인 구현
-			try {
-				await curs.execute("create table autologin_tokens ( username text default '', token text default '' )");
-				await curs.execute("create table trusted_devices ( username text default '', id text default '' )");
-			} catch(e) {}
-		} case 6: {
-			// 로그인 내역 테이블 빼먹음
-			try {
-				await curs.execute("alter table login_history\nADD time text;");
-			} catch(e) {}
-		} case 7: {
-			// 위키 설정
-			try {
-				const fd = await curs.execute("select value from config where key = 'frontpage'");
-				if(fd.length && fd[0].value) {
-					wikiconfig.front_page = fd[0].value;
-					delete wikiconfig.frontpage;
-					await curs.execute("delete from config where key = 'frontpage' or key = 'front_page'");
-					await curs.execute("insert into config (key, value) values ('front_page', ?)", [fd[0].value]);
-				}
-				const cn = await curs.execute("select value from config where key = 'copyright_notice'");
-				if(cn.length && cn[0].value) {
-					wikiconfig.editagree_text = cn[0].value;
-					delete wikiconfig.copyright_notice;
-					await curs.execute("delete from config where key = 'copyright_notice'");
-					await curs.execute("insert into config (key, value) values ('editagree_text', ?)", [cn[0].value]);
-				}
-				for(var key in wikiconfig) {
-					if(key == 'update_code') continue;
-					await curs.execute("delete from config where key = ?", [key]);
-					await curs.execute("insert into config (key, value) values (?, ?)", ['wiki.' + key, wikiconfig[key]]);
-					wikiconfig['wiki.' + key] = wikiconfig[key];
-					delete wikiconfig[key];
-				}
-			} catch(e) {}
-		} case 8: {
-			// 탈퇴한 사용자 2
-			curs.execute("update history set username = '탈퇴한 사용자', ismember = 'ip' where username = '탈퇴한 사용자' and ismember = 'author'");
-			curs.execute("update res set username = '탈퇴한 사용자', ismember = 'ip' where username = '탈퇴한 사용자' and ismember = 'author'");
-			curs.execute("update block_history set executer = '탈퇴한 사용자', ismember = 'ip' where executer = '탈퇴한 사용자' and ismember = 'author'");
-			curs.execute("update edit_requests set processor = '탈퇴한 사용자', ismember = 'ip' where processor = '탈퇴한 사용자' and ismember = 'author'");
-			curs.execute("update edit_requests set username = '탈퇴한 사용자', ismember = 'ip' where username = '탈퇴한 사용자' and ismember = 'author'");
-		} case 9: {
-			// 구버전 더시드 토론
-			try {
-				await curs.execute("alter table threads\nADD num text;");
-				let dd = await curs.execute("select tnum from threads");
-				for(var idx=0; idx<dd.length; idx++) {
-					let item = dd[idx];
-					let dt = await curs.execute("select time from res where id = '1' and tnum = ?", [item.tnum]);
-					dd[idx].tt = Number(dt[0].time);
-				}
-				dd = dd.sort((l, r) => l.tt - r.tt);
-				for(var idx=0; idx<dd.length; idx++) {
-					let item = dd[idx];
-					await curs.execute("update threads set num = ? where tnum = ?", [String(idx + 1), item.tnum]);
-				}
-			} catch(e) {}
-		} case 10: {
-			// 새로운 토론주소
-			try {
-				await curs.execute("alter table threads\nADD slug text;");
-				await curs.execute("alter table edit_requests\nADD slug text;");
-				var dd = await curs.execute("select tnum from threads");
-				for(let item of dd) {
-					await curs.execute("update threads set slug = ? where tnum = ?", [newID(), item.tnum]);
-				}
-				var dd = await curs.execute("select id from edit_requests");
-				for(let item of dd) {
-					await curs.execute("update edit_requests set slug = ? where id = ?", [newID(), item.id]);
-				}
-			} catch(e) {}
-		} case 11: {
-			// 까먹음
-			try {
-				await curs.execute("alter table res\nADD slug text;");
-				var dd = await curs.execute("select tnum from threads");
-				for(let item of dd) {
-					await curs.execute("update res set slug = ? where tnum = ?", [newID(), item.tnum]);
-				}
-			} catch(e) {}
-		} case 12: {
-			// API 토큰
-			try {
-				await curs.execute("create table api_tokens (username text default '', token text default '')");
-			} catch(e) {}
-		} case 13: {
-			// API 편집
-			try {
-				await curs.execute("alter table history\nADD isapi text;");
-			} catch(e) {}
-		} case 14: {
-			// 더시드 4.16.0이상에서 이상하게 작동하는 버그 수정
-			try {
-				var dd = await curs.execute("select id from edit_requests where slug is null or slug = ''");
-				for(var item of dd) {
-					await curs.execute("update edit_requests set slug = ? where id = ?", [newID(), item.id]);
-				}
-			} catch(e) {}
-		} case 15: {
-			try {
-				await curs.execute("alter table aclgroup_groups\nADD css text;");
-				await curs.execute("alter table aclgroup_groups\nADD warning_description text;");
-			} catch(e) {}
-		} case 16: {
-			try {
-				await curs.execute("alter table users\nADD email text;");
-			} catch(e) {}
-		} case 17: {
-			try {
-				await curs.execute("create table recover_account (key text default '', username text default '', email text default '', time text default '')");
-			} catch(e) {}
-		} case 18: {
-			try {
-				await curs.execute("alter table aclgroup_groups\nADD disallow_signup text;");
-				await curs.execute("update aclgroup_groups set css = ? where name = ?", ['text-decoration: line-through !important;', '차단된 사용자']);
-			} catch(e) {}
-		} case 19: {
-			try {
-				await curs.execute("alter table files\nADD url text;");
-				hostconfig.disable_file_server = true;
-				fs.writeFile('config.json', JSON.stringify(hostconfig), 'utf8', () => 1);
-			} catch(e) {}
-		} case 20: {
-			try {
-				await curs.execute("alter table files\nADD size text;");
-			} catch(e) {}
-		} case 21: {
-			try {
-				await curs.execute("alter table files\nADD width text;");
-				await curs.execute("alter table files\nADD height text;");
-			} catch(e) {}
-		} case 22: {
-			try {
-				await curs.execute("update aclgroup_groups set css = ? where name = ?", ['text-decoration: line-through !important; color: gray !important;', '차단된 사용자']);
-			} catch(e) {}
-		} case 23: {
-			try {
-				await curs.execute("create table boardipacl (cidr text default '', expiration text default '', note text default '', date text default '')");
-				await curs.execute("create table boardsuspendaccount (username text default '', expiration text default '', note text default '', date text default '')");
-			} catch(e) {}
-		} case 24: {
-			try {
-				await curs.execute("alter table history\nADD loghider text;");
-				await curs.execute("update history set loghider = ''");
-			} catch(e) {}
-		}
-	}
-	await curs.execute("update config set value = ? where key = 'update_code'", [updatecode]);
-	wikiconfig.update_code = updatecode;
-	
-	if(hostconfig.debug) console.log('경고! 위키가 디버그 모드에서 실행 중입니다. 알려지지 않은 취약점에 노출될 수 있습니다.\n');
-	
 	// 작성이 필요한 문서
 	async function cacheNeededPages() {
 		for(var prop of Object.getOwnPropertyNames(neededPages))
@@ -572,12 +373,11 @@ wiki.use(function(req, res, next) {
 	setInterval(cacheNeededPages, 86400000);
 	cacheNeededPages();
 	
-	if(ver('4.18.0'))
-		setInterval(async function clearExpiredAclgroups() {
-			var dbdata = await curs.execute("select username, aclgroup from aclgroup where not expiration = '0' and ? > cast(expiration as integer)", [Number(getTime())]);
-			for(var item of dbdata) 
-				if(aclgroupCache.group[item.username.toLowerCase()])
-					aclgroupCache.group[item.username.toLowerCase()].remove(item.aclgroup);
+	setInterval(async function clearExpiredAclgroups() {
+		var dbdata = await curs.execute("select username, aclgroup from aclgroup where not expiration = '0' and ? > cast(expiration as integer)", [Number(getTime())]);
+		for(var item of dbdata) 
+			if(aclgroupCache.group[item.username.toLowerCase()])
+				aclgroupCache.group[item.username.toLowerCase()].remove(item.aclgroup);
 			await curs.execute("delete from aclgroup where not expiration = '0' and ? > cast(expiration as integer)", [Number(getTime())]);
 		}, 60000);
 
@@ -591,22 +391,11 @@ wiki.use(function(req, res, next) {
 		aclgroupCache.group[item.username.toLowerCase()].push(item.aclgroup);
 	}
 	
-	// 서버실행
-	const { host, port } = hostconfig;
-	if(hostconfig.default_host)
-		wiki.listen(process.env.PORT);  
-	else 
-		wiki.listen(port, host);
-	console.log(host + (port == 80 ? '' : (':' + port)) + '에서 실행 중. . .');
-	beep();
-	
-	if(hostconfig.search_autostart) {
-		child_process.execFile('node', ['search.js'], function() {});
-	}
-	
-	if(hostconfig.file_autostart) {
-		child_process.execFile('node', ['fileserver.js'], function() {});
-	}
+
+	wiki.listen(hostconfig.port, hostconfig.host, () => {
+		console.log(`${hostconfig.host}:${hostconfig.port} 에서 실행 중...`);
+		beep();
+  	});
 })();
 
 if(hostconfig.self_request) {

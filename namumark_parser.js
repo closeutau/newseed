@@ -1066,7 +1066,7 @@ module.exports = async function markdown(req, content, discussion = 0, title = '
 			d = `<iframe allowfullscreen src="//tv.kakao.com/embed/player/cliplink/${encodeURIComponent(id)}" loading=lazy width="${params.width || 640}" height="${params.height || 360}" frameborder=0></iframe>`;
 		}
 		break; case 'nicovideo': {
-			if(^sm\d+$.test) {
+			if(/^sm\d+$/.test) {
 				d = `<iframe allowfullscreen src="//embed.nicovideo.jp/watch/${encodeURIComponent(id)}" loading=lazy width="${params.width || 720}" height="${params.height || 480}" frameborder=0></iframe>`;
 			} else {
 				d = `<iframe allowfullscreen src="//embed.nicovideo.jp/watch/sm${encodeURIComponent(id)}" loading=lazy width="${params.width || 720}" height="${params.height || 480}" frameborder=0></iframe>`;

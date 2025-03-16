@@ -108,7 +108,8 @@
   padding: 0px 0.15em;
   background: green;
   color: white;
-  content: "外";
+  content: "";
+  font-family: "Ionicons" !important;
 }
 
 /* 이미지 */

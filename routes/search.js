@@ -1,6 +1,8 @@
 router.get(/^\/complete\/(.*)/, (req, res) => {
 	// 초성검색은 나중에
-	const query = req.params[0];
+	let query;
+
+//	if(!req.params[0] || params[0].trim().length === 0)
 	const doc = processTitle(query);
 	curs.execute("select title, namespace from documents where lower(title) like ? || '%' and lower(namespace) = ? limit 10", [doc.title.toLowerCase(), doc.namespace.toLowerCase()])
 		.then(data => {

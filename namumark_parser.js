@@ -1065,8 +1065,9 @@ module.exports = async function markdown(req, content, discussion = 0, title = '
 		break; case 'kakaotv': {
 			d = `<iframe allowfullscreen src="//tv.kakao.com/embed/player/cliplink/${encodeURIComponent(id)}" loading=lazy width="${params.width || 640}" height="${params.height || 360}" frameborder=0></iframe>`;
 		}
+		// TODO: 파라미터에 sm 붙이든 말든 잘 작동하게 수정
 		break; case 'nicovideo': {
-			d = `<iframe allowfullscreen src="//embed.nicovideo.jp/watch/sm${encodeURIComponent(id)}" loading=lazy width="${params.width || 720}" height="${params.height || 480}" frameborder=0></iframe>`;
+			d = `<iframe allowfullscreen src="//embed.nicovideo.jp/watch/${encodeURIComponent(id)}" loading=lazy width="${params.width || 720}" height="${params.height || 480}" frameborder=0></iframe>`;
 		}
 		break; case 'vimeo': {
 			d = `<iframe allowfullscreen src="//player.vimeo.com/video/${encodeURIComponent(id)}" loading=lazy width="${params.width || 640}" height="${params.height || 360}" frameborder=0></iframe>`;

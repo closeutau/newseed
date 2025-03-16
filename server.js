@@ -52,10 +52,9 @@ async function init() {
 		sessionhttps: false,
 	};
 	
-	// 만들 테이블
 	const tables = {
 		'documents': ['title', 'content', 'namespace', 'time'],
-		'history': ['title', 'namespace', 'content', 'rev', 'time', 'username', 'changes', 'log', 'iserq', 'erqnum', 'advance', 'ismember', 'edit_request_id', 'flags', 'isapi', 'loghider'],
+		'history': ['title', 'namespace', 'content', 'rev', 'time', 'username', 'changes', 'log', 'iserq', 'erqnum', 'advance', 'ismember', 'edit_request_id', 'flags', 'isapi', 'loghider', 'marktroller', 'hider'],
 		'namespaces': ['namespace', 'locked', 'norecent', 'file'],
 		'users': ['username', 'password', 'email'],
 		'user_settings': ['username', 'key', 'value'],
@@ -70,12 +69,15 @@ async function init() {
 		'login_history': ['username', 'ip', 'time'],
 		'account_creation': ['key', 'email', 'time'],
 		'acl': ['title', 'namespace', 'id', 'type', 'action', 'expiration', 'conditiontype', 'condition', 'ns'],
+		'ipacl': ['cidr', 'al', 'expiration', 'note', 'date'],
+		'suspend_account': ['username', 'date', 'expiration', 'note'],
 		'aclgroup_groups': ['name', 'admin', 'date', 'lastupdate', 'css', 'warning_description', 'disallow_signup'],
 		'aclgroup': ['aclgroup', 'type', 'username', 'note', 'date', 'expiration', 'id'],
 		'block_history': ['date', 'type', 'aclgroup', 'id', 'duration', 'note', 'executer', 'target', 'ismember', 'logid'],
-		'edit_requests': ['title', 'namespace', 'id', 'deleted', 'state', 'content', 'baserev', 'username', 'ismember', 'log', 'date', 'processor', 'processortype', 'lastupdate', 'processtime', 'reason', 'rev'],
+		'edit_requests': ['title', 'namespace', 'id', 'deleted', 'state', 'content', 'baserev', 'username', 'ismember', 'log', 'date', 'processor', 'processortype', 'lastupdate', 'processtime', 'reason', 'rev', 'locker'],
 		'files': ['title', 'namespace', 'hash', 'url', 'size', 'width', 'height'],
 		'backlink': ['title', 'namespace', 'link', 'linkns', 'type', 'exist'],
+		'classic_acl': ['title', 'namespace', 'blockkorea', 'blockbot', 'read', 'edit', 'del', 'discuss', 'move'],
 		'autologin_tokens': ['username', 'token'],
 		'trusted_devices': ['username', 'id'],
 		'api_tokens': ['username', 'token'],

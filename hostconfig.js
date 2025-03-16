@@ -1,7 +1,7 @@
 const hostconfig = require('./config.json');
 
 if(hostconfig.theseed_version === undefined)
-	hostconfig.theseed_version = process.env.THESEED_VERSION || '4.12.0';
+	hostconfig.theseed_version = process.env.THESEED_VERSION || '4.26.0';
 
 if(hostconfig.host === undefined)
 	hostconfig.host = process.env.HOST || '0.0.0.0';

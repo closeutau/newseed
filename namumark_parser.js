@@ -1026,6 +1026,25 @@ module.exports = async function markdown(req, content, discussion = 0, title = '
 		let pcm = fpcm.match(/\[pagecount\((((?!\)).)*)\)\]/i);
 		data = data.replace(fpcm, pgcnt[pcm[1]] === undefined ? pgcnta : pgcnt[pcm[1]]);
 	}
+
+		let includevar = data.match(/@([^@]+)@/g) || [];
+
+        for (let match of includevar) {
+            let content = match.slice(1, -1);
+
+            if (content.includes(' ') || content.includes(',')) {
+                continue;
+            }
+
+            if (content.includes('=')) {
+                const splitIndex = content.indexOf('=');
+                const lastincludetext = content.slice(splitIndex + 1);
+
+                data = data.replace(match, lastincludetext);
+            } else {
+            	data = data.replace(match, '');
+            }
+    	}
 	
 	// 동화상
 	for(let finc of (data.match(/\[(youtube|kakaotv|nicovideo|vimeo|navertv)[(](((?![)])(.|<spannw>[)]<\/spannw>))+)[)]\]/gi) || [])) {

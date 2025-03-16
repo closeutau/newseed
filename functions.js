@@ -95,26 +95,32 @@ const whattr = {
 };
 
 // 사용자 권한
-var perms = [
-	'hide_document_history_log', 'delete_thread', 'admin', 'editable_other_user_document', 'suspend_account', 'ipacl', 
-	'update_thread_status', 'acl', 'nsacl', 'hide_thread_comment', 'grant', 'no_force_recaptcha', 
-	'disable_two_factor_login', 'login_history', 'update_thread_document', 'update_thread_topic', 
-	'aclgroup', 'api_access', 
-];
+var perms = ['delete_thread',
+        'admin',
+        'update_thread_status',
+        'nsacl',
+        'hide_thread_comment',
+        'grant',
+        'disable_two_factor_login',
+        'no_force_captcha',
+        'login_history',
+        'update_thread_document',
+        'update_thread_topic',
+        'aclgroup',
+        'hide_document_history_log',
+        'hide_revision',
+        'mark_troll_revision',
+        'batch_revert',
+        'api_access',
+        'developer',
+        'hideip',
+        'config',
+        'aclgroup_hidelog',
+        'grant_hidelog',
+        'login_history_hidelog',
+        'batch_revert_hidelog'];
+
 var disable_autoperms = ['disable_two_factor_login'];
-
-if(ver('4.18.0')) perms.remove('ipacl'), perms.remove('suspend_account');
-else perms.remove('aclgroup');
-if(ver('4.2.0')) perms.remove('acl');
-if(!ver('4.20.0')) perms.remove('api_access');
-if(!ver('4.4.1')) perms.remove('disable_two_factor_login');
-if(!ver('4.4.2')) perms.remove('login_history');
-if(!ver('4.22.4')) perms.remove('hide_document_history_log');
-if(ver('4.18.0')) perms.remove('editable_other_user_document');
-if(!ver('4.4.3')) { perms.remove('update_thread_document'); perms.remove('update_thread_topic'); }
-if(!ver('4.0.20')) perms.push('developer', 'tribune', 'arbiter');
-if(hostconfig.debug) perms.push('debug');
-
 // 삐
 function beep(cnt = 1) { // 경고음 재생
 	for(var i=1; i<=cnt; i++)

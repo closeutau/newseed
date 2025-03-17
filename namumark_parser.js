@@ -947,7 +947,8 @@ module.exports = async function markdown(req, content, discussion = 0, title = '
 		data = data.replace(reg[0], reg[1] + '<a class=wiki-self-link href="#' + reg[2] + '">#' + reg[2] + '</a>' + reg[3]);
 		anc.lastIndex--;
 	}
-	
+
+	// TODO: 지랄맞은 파서 정상화 및 anchor 지원
 	// 문단
 	data = '<div>\r' + data;
 	var maxszz = 2;

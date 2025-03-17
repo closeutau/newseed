@@ -27,17 +27,10 @@ const hostconfig = require('./hostconfig');
 const functions = require('./functions');
 for(var item in functions) global[item] = functions[item];
 
-const rHeadings = 
-	ver('4.7.2') 
-		? /^(=\s(((?!\s=).)*)\s=|==\s(((?!\s==).)*)\s==|===\s(((?!\s===).)*)\s===|====\s(((?!\s====).)*)\s====|=====\s(((?!\s=====).)*)\s=====|======\s(((?!\s======).)*)\s======|=[#]\s(((?!\s[#]=).)*)\s[#]=|==[#]\s(((?!\s[#]==).)*)\s[#]==|===[#]\s(((?!\s[#]===).)*)\s[#]===|====[#]\s(((?!\s[#]====).)*)\s[#]====|=====[#]\s(((?!\s[#]=====).)*)\s[#]=====|======[#]\s(((?!\s[#]======).)*)\s[#]======)$/gm
-		: /^(=\s(((?!\s=).)*)\s=|==\s(((?!\s==).)*)\s==|===\s(((?!\s===).)*)\s===|====\s(((?!\s====).)*)\s====|=====\s(((?!\s=====).)*)\s=====|======\s(((?!\s======).)*)\s======)$/gm ;
-
+const rHeadings = /^(=\s(((?!\s=).)*)\s=|==\s(((?!\s==).)*)\s==|===\s(((?!\s===).)*)\s===|====\s(((?!\s====).)*)\s====|=====\s(((?!\s=====).)*)\s=====|======\s(((?!\s======).)*)\s======|=[#]\s(((?!\s[#]=).)*)\s[#]=|==[#]\s(((?!\s[#]==).)*)\s[#]==|===[#]\s(((?!\s[#]===).)*)\s[#]===|====[#]\s(((?!\s[#]====).)*)\s[#]====|=====[#]\s(((?!\s[#]=====).)*)\s[#]=====|======[#]\s(((?!\s[#]======).)*)\s[#]======)$/gm;
 const rHeading = [, ];
 for(var i=1; i<=6; i++) {
-	if(ver('4.7.2'))
-		rHeading.push(RegExp(`^${multiply('=', i)}([#]|)\\s(((?!${multiply('=', i)}).)*)\\s([#]|)${multiply('=', i)}$`, 'm'));
-	else
-		rHeading.push(RegExp(`^${multiply('=', i)}(\\s)(((?!${multiply('=', i)}).)*)(\\s)${multiply('=', i)}$`, 'm'));
+	rHeading.push(RegExp(`^${multiply('=', i)}([#]|)\\s(((?!${multiply('=', i)}).)*)\\s([#]|)${multiply('=', i)}$`, 'm'));
 }
 
 function parseTable(content) {
@@ -412,6 +405,8 @@ function parseList(data) {
 			row = row.replace(/^\s/, '');
 			row = row.replace(/^[*](\s*)/, '</liwikilist><liwikilist>\n');
 			inlist = 1;
+		} else if(row.startsWith('*')) {
+			return row;
 		}
 		if(row.startsWith(' 1.') && !inol1list) {
 			row = row.replace(/^\s1[.](\s*)/, '<olwikilist class=wiki-list>\n<liwikilist>\n');
@@ -839,7 +834,9 @@ module.exports = async function markdown(req, content, discussion = 0, title = '
 	} while((data.match(/^(\s+)/gim) || []).filter(item => item.replace(/\n/g, '') && item).length);
 	data = data.replace(/<divwikiindent\sclass[=]wiki[-]indent>\n/g, '<div class=wiki-indent>');
 	data = data.replace(/\n<\/divwikiindent>/g, '</div>');
-	
+
+	// TODO: 대충 여기 어딘가에 ruby, dday 들어갈거임
+	// TODO: 대충 여기 어딘가에 쪼개둬서 [[마인애플|[[파일:169.9.com]]]] 같은거 정상화되게 수정할 예정
 	// 링크
 	for(let link of (data.match(/\[\[(((?!\]\]).)+)\]\]/g) || [])) {
 		var _dest = link.match(/\[\[(((?!\]\]).)+)\]\]/)[1];
